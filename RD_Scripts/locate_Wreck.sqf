@@ -47,9 +47,12 @@ RD_fnc_findWreckLocation = {
 	
 	while {(count _wreckLocation) == 0} do {
 		_randomSpot = _startingZone call BIS_fnc_randomPosTrigger;
-		_wreckLocation = _randomSpot findEmptyPosition[5,200,_vehicleToLocate];
+		//_wreckLocation = _randomSpot findEmptyPosition[5,200,_vehicleToLocate];
+		_wreckLocation = _randomSpot isFlatEmpty [10,-1,0.2,4,0];
+	
 	};
-
+	_wreckLocation deleteAt 2;
+	
 	_startingZone = nil;
 	_randomSpot = nil;
 	
@@ -66,7 +69,13 @@ RD_fnc_moveVehicle = {
 	_targetVehicle setPos _targetPos;
 	_targetVehicle setDir floor random 360;
 	_targetVehicle allowDamage false;
-
+	
+	{
+		_x moveInAny _targetVehicle;
+	}forEach units downedCrew;
+	
+	//_targetVehicle enableSimulationGlobal false;
+	
 	_targetPos = nil;
 	_targetVehicle = nil;
 	
@@ -135,7 +144,9 @@ _wreckSpot = [_location, _vehicleClass] call RD_fnc_findWreckLocation;
 [_location] call RD_fnc_setVehicleTask;
 
 //[_wreckSpot] spawn RD_fnc_findHunterArea;
-[_wreckSpot] execVM "RD_Scripts\hunterGroups.sqf";
+
+//_center = getPosATLVisual  (leader downedCrew);
+[] execVM "RD_Scripts\hunterGroups.sqf";
 
 
 
